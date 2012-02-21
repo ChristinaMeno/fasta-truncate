@@ -55,7 +55,10 @@ avian = (
 trans = (('environment', 'env'),
          ('california', 'CA'),
          ('thailand', 'thai'),
-         ('guangxi_luochengmulaozuzizhi', 'china'))
+         ('guangxi_luochengmulaozuzizhi', 'china'),
+         ('north_|south_|east_|west_|interior_|central_|western_', ''),
+        ('>a/ft_benning/wrair1669p/2009_h1n1_a/ft.benning/wrair1669p/2009_h1n1__', '>a/ft_benning/wrair1669p/2009_h1n1_'),
+)
 
 def smart_truncate(line):
     
@@ -65,20 +68,14 @@ def smart_truncate(line):
 
     for x in line.split('/'):
         if x in avian:
-
             line = re.sub(x, 'avian', line)
             
-        
     double_start = line.rfind(line[1:PREFIX_LENGTH], PREFIX_LENGTH)
     if double_start != -1:
         line = line[double_start:] 
         
-        
-    line = re.sub('north_|south_|east_|west_|interior_|central_|western_', '', line)
-    
-    for long, short in trans:
-        line = line.replace(long, short)
-
+    for pattern, replacement in trans:
+        line = re.sub(pattern, replacement, line)
 
     if len(line)  > MAX_LEN:
         print line,
