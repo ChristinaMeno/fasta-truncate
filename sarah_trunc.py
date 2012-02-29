@@ -58,13 +58,19 @@ trans = (('environment', 'env'),
          ('guangxi_luochengmulaozuzizhi', 'china'),
          ('north_|south_|east_|west_|interior_|central_|western_', ''),
         ('>a/ft_benning/wrair1669p/2009_h1n1_a/ft.benning/wrair1669p/2009_h1n1__', '>a/ft_benning/wrair1669p/2009_h1n1_'),
+        ('>a/aa/huston/1945__|_a_/_h1n1__', '>a/aa/huston/1945_h1n1__'),
 )
 
 def smart_truncate(line):
     
     line = line.lower()
-    if len(line.split('|')) > 1:
-        line = line[0]
+
+    for pattern, replacement in trans:
+        line = re.sub(pattern, replacement, line)
+    
+    pipe_parts = line.split('|')
+    if len(pipe_parts) > 1:
+        line = pipe_parts[0] + '|A'
 
     for x in line.split('/'):
         if x in avian:
@@ -73,20 +79,15 @@ def smart_truncate(line):
     double_start = line.rfind(line[1:PREFIX_LENGTH], PREFIX_LENGTH)
     if double_start != -1:
         line = line[double_start:] 
-        
-    for pattern, replacement in trans:
-        line = re.sub(pattern, replacement, line)
 
-    if len(line)  > MAX_LEN:
-        print line,
-    return line    
+    return line.strip().title() + '\r\n' 
                    
 def main():        
     with open(sys.argv[1], 'r') as f:
         for line in f:
             if line.startswith('>'):
                 line = smart_truncate(line)
-            #print line,
+            print line,
                    
 if __name__ == '__main__':
     sys.exit(main())
